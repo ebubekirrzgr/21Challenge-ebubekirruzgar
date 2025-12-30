@@ -100,9 +100,52 @@ module challenge::day_14 {
     // - Create board, add multiple tasks with different rewards
     // - Verify total_reward is correct
     // 
-    // #[test]
-    // fun test_create_board_and_add_task() {
-    //     // Your code here
-    // }
+    #[test]
+    fun test_create_board_and_add_task() {
+        let owner = @0x1;
+        let mut board = new_board(owner);
+
+        let task = new_task(string::utf8("Test Task"), 100);
+        add_task(&mut board, task);
+
+        let len = vector::length(&board.tasks);
+        assert_eq(len, 1, 0);
+    }
+
+    #[test]
+    fun test_complete_task() {
+        let owner = @0x1;
+        let mut board = new_board(owner);
+
+        let task1 = new_task(string::utf8("Task 1"), 50);
+        let task2 = new_task(string::utf8("Task 2"), 100);
+
+        add_task(&mut board, task1);
+        add_task(&mut board, task2);
+
+        // Complete first task
+        let task = vector::borrow_mut(&mut board.tasks, 0);
+        complete_task(task);
+
+        let completed = completed_count(&board);
+        assert_eq(completed, 1, 0);
+    }
+
+    #[test]
+    fun test_total_reward() {
+        let owner = @0x1;
+        let mut board = new_board(owner);
+
+        let task1 = new_task(string::utf8("Task 1"), 50);
+        let task2 = new_task(string::utf8("Task 2"), 100);
+        let task3 = new_task(string::utf8("Task 3"), 25);
+
+        add_task(&mut board, task1);
+        add_task(&mut board, task2);
+        add_task(&mut board, task3);
+
+        let total = total_reward(&board);
+        assert_eq(total, 175, 0);
+    }
 }
 
